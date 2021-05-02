@@ -33,7 +33,7 @@ class _LocationScreenState extends State<LocationScreen> {
         weatherMsg = 'Something went wrong 😥😥';
         return;
       }
-      double temp = weatherdata['main']['temp'];
+      var temp = weatherdata['main']['temp'];
       temperature = temp.toInt();
       weatherMsg = weatherModel.getMessage(temperature);
       var condition = weatherdata['weather'][0]['id'];
@@ -65,7 +65,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 children: <Widget>[
                   FlatButton(
                     onPressed: () async {
-                      var weatherdata = weatherModel.getWeatherData();
+                      var weatherdata = await weatherModel.getWeatherData();
                       updateUI(weatherdata);
                     },
                     child: Icon(
