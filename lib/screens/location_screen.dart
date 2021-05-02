@@ -13,6 +13,7 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   int temperature;
+  String weatherMsg;
   String weathericon;
   String city;
 
@@ -25,8 +26,16 @@ class _LocationScreenState extends State<LocationScreen> {
 
   void updateUI(dynamic weatherdata) {
     setState(() {
+      if (weatherdata == null) {
+        temperature = 0;
+        weathericon = 'Error';
+        city = '';
+        weatherMsg = 'Something went wrong 😥😥';
+        return;
+      }
       double temp = weatherdata['main']['temp'];
       temperature = temp.toInt();
+      weatherMsg = weatherModel.getMessage(temperature);
       var condition = weatherdata['weather'][0]['id'];
       weathericon = weatherModel.getWeatherIcon(condition);
       city = weatherdata['name'];
@@ -55,7 +64,10 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherdata = weatherModel.getWeatherData();
+                      updateUI(weatherdata);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
@@ -88,7 +100,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  '${weatherModel.getMessage(temperature)} in $city',
+                  '$weatherMsg in $city',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
