@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:clima/location.dart';
+import 'package:clima/services/networking.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -15,32 +16,22 @@ class _LoadingScreenState extends State<LoadingScreen> {
   double lat;
   double lng;
 
-  void getLocation() async {
+  void getLocationandData() async {
     Location location = Location();
     await location.getcurrentLocation();
 
     lat = location.lat;
     lng = location.lng;
-    getData();
-    // print(position);
-  }
 
-  void getData() async {
-    Response res = await get(
+    NetworkHelper network = NetworkHelper(
         'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lng&appid=$ApiKey');
-    if (res.statusCode == 200) {
-      String data = res.body;
-      var jsondata = jsonDecode(data);
-      double temperature = jsondata['main']['temp'];
-      int condition = jsondata['weather'][0]['id'];
-      String city = jsondata['name'];
-    }
+    var weatherdata = await network.getData();
   }
 
   @override
   void initState() {
     super.initState();
-    getLocation();
+    getLocationandData();
   }
 
   @override
